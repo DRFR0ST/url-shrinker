@@ -1,7 +1,7 @@
 'use strict';
 module.exports = function(app) {
-  var userLogin = require('../controllers/shrinkController');
+  var shrinkUrl = require('../controllers/shrinkController');
 
   app.route('/')
-    .post(userLogin.requestHandler);
+    .post(shrinkUrl.requestHandler);
 };

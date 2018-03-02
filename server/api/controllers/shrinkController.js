@@ -1,8 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose'),
-    Shrinker = mongoose.model('Shrinker'),
-    tempSessions = [];
+    Shrinker = mongoose.model('Shrinker');
 
 exports.requestHandler = function(req, res) {
     var exec = req.body.exec;
@@ -19,6 +18,10 @@ exports.requestHandler = function(req, res) {
 
             case "sqlRemove":
                 sqlRemove(exec[i], res);
+                break;
+
+            case "sqlShrinkList":
+                sqlShrinkList(res);
                 break;
 
             default:
@@ -38,7 +41,7 @@ function sqlShrink(data, res)
     if(err)
       res.send(err);
 
-    if(shr == null) {
+    if(shr != null) {
       response(res, "403", "Name already taken!", null);
       return;
     }
@@ -57,42 +60,52 @@ function sqlShrink(data, res)
       response(res, "200", "", null);
     });
   });
+}
 
-  function sqlRemove(data, res)
-  {
-    var name = data[1][0];
+function sqlRemove(data, res)
+{
+  var name = data[1][0];
 
-    Shrinker.findOne({name: name}, function(shr, err) {
+  Shrinker.findOne({name: name}, function(shr, err) {
+    if(err)
+      res.send(err);
+
+    if(shr == null) {
+      response(res, "404", "Data not found!", null);
+      return;
+    }
+
+    shr.remove(function(shr, err) {
       if(err)
         res.send(err);
 
-      if(shr == null) {
-        response(res, "404", "Data not found!", null);
-        return;
-      }
-
-      shr.remove(function(shr, err) {
-        if(err)
-          res.send(err);
-
-        response(res, "200", "", null);
-      });
+      response(res, "200", "", null);
     });
-  }
+  });
+}
 
-  function sqlUnshrink(data, res)
-  {
-    var name = data[1][0];
+function sqlUnshrink(data, res)
+{
+  var name = data[1][0];
 
-    Shrinker.findOne({name: name}, function(shr, err) {
-      if(err)
-        res.send(err);
+  Shrinker.findOne({name: name}, function(shr, err) {
+    if(err)
+      res.send(err);
 
-      response(res, "202", "", shr);
-    });
-  }
+    response(res, "202", "", shr);
+  });
+}
 
-  function response(res, status, message, data) {
-      res.json({ status: status, message: message, data: data });
-  }
+function sqlShrinkList(res)
+{
+  Shrinker.find({}, function(shr, err) {
+    if(err)
+      res.send(err);
+
+    response(res, "202", "", shr);
+  });
+}
+
+function response(res, status, message, data) {
+    res.json({ status: status, message: message, data: data });
 }

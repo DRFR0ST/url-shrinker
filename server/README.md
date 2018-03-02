@@ -33,3 +33,14 @@
 		]
 	]
 }
+
+## List all shrinks -- sqlShrinkList
+{
+	"exec": [
+		[
+			"sqlShrinkList",
+			[],
+			{}
+		]
+	]
+}
