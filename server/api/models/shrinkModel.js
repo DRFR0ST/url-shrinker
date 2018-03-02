@@ -10,10 +10,10 @@ var ShrinkSchema = new Schema({
     type: String,
     required: 'Enter the url you want to shrink!'
   },
-  name: { 
+  name: {
     type: String,
     required: 'Enter the name of your shrink!'
   }
 });
 
-module.exports = mongoose.model('Users', ShrinkSchema);
+module.exports = mongoose.model('Shrinker', ShrinkSchema);

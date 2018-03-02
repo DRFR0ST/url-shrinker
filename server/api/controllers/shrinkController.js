@@ -43,12 +43,12 @@ function sqlShrink(data, res)
       return;
     }
 
-    var shrink_data = new Shrinker{
+    var shrink_data = new Shrinker({
       created: Date.now(),
       expiry: expiry,
       name: name,
       url: url
-    };
+    });
 
     shrink_data.save(function(err) {
       if(err)
